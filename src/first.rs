@@ -18,22 +18,12 @@ impl List {
         self.head = Link::More(new_node);
     }
 
-    fn pop_node(&mut self) -> Link {
-        mem::replace(&mut self.head, Link::Empty)
-    }
-
-    fn pop(&mut self) -> Option<i32> {
-        match self.pop_node() {
-            Link::Empty => None,
-            Link::More(node) => {
-                self.head = node.next;
-                Some(node.elem)
-            }
-        }
-    }
-
-//    pub fn pop(&mut self) -> Option<i32> {
-//        match mem::replace(&mut self.head, Link::Empty) {
+//    fn pop_node(&mut self) -> Link {
+//        mem::replace(&mut self.head, Link::Empty)
+//    }
+//
+//    fn pop(&mut self) -> Option<i32> {
+//        match self.pop_node() {
 //            Link::Empty => None,
 //            Link::More(node) => {
 //                self.head = node.next;
@@ -41,15 +31,25 @@ impl List {
 //            }
 //        }
 //    }
+
+    pub fn pop(&mut self) -> Option<i32> {
+        match mem::replace(&mut self.head, Link::Empty) {
+            Link::Empty => None,
+            Link::More(node) => {
+                self.head = node.next;
+                Some(node.elem)
+            }
+        }
+    }
 }
 
 impl Drop for List {
     fn drop(&mut self) {
-        while let Link::More(_) = self.pop_node() { };
-//        let mut cur_link = mem::replace(&mut self.head, Link::Empty);
-//        while let Link::More(mut boxed_node) = cur_link {
-//            cur_link = mem::replace(&mut boxed_node.next, Link::Empty);
-//        }
+//        while let Link::More(_) = self.pop_node() { };
+        let mut cur_link = mem::replace(&mut self.head, Link::Empty);
+        while let Link::More(mut boxed_node) = cur_link {
+            cur_link = mem::replace(&mut boxed_node.next, Link::Empty);
+        }
 //
    }
 }
